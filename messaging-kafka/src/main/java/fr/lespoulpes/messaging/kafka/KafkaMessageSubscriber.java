@@ -1,10 +1,8 @@
-package fr.lespoulpes.messaging.bridge.kafka;
+package fr.lespoulpes.messaging.kafka;
 
-import java.util.Collections;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
+import fr.lespoulpes.messaging.bridge.Message;
+import fr.lespoulpes.messaging.bridge.MessageConsumer;
+import fr.lespoulpes.messaging.bridge.MessageSubscriber;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -14,9 +12,10 @@ import org.apache.kafka.common.errors.WakeupException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import fr.lespoulpes.messaging.bridge.Message;
-import fr.lespoulpes.messaging.bridge.MessageConsumer;
-import fr.lespoulpes.messaging.bridge.MessageSubscriber;
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class KafkaMessageSubscriber<K, V, T, U> implements MessageSubscriber {
 	private static final Logger LOG = LogManager.getLogger(KafkaMessageSubscriber.class);

@@ -1,7 +1,8 @@
-package fr.lespoulpes.messaging.bridge.kafka;
+package fr.lespoulpes.messaging.kafka;
 
-import java.util.function.Supplier;
-
+import fr.lespoulpes.messaging.bridge.Message;
+import fr.lespoulpes.messaging.bridge.MessageProducer;
+import fr.lespoulpes.messaging.bridge.MessagePublisher;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -9,9 +10,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import fr.lespoulpes.messaging.bridge.Message;
-import fr.lespoulpes.messaging.bridge.MessageProducer;
-import fr.lespoulpes.messaging.bridge.MessagePublisher;
+import java.util.function.Supplier;
 
 public class KafkaMessagePublisher<K, V> implements MessagePublisher<K, V> {
 	private static final Logger LOG = LogManager.getLogger(KafkaMessagePublisher.class);
