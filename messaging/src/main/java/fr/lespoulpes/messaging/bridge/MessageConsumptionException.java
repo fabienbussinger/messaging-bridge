@@ -2,50 +2,48 @@ package fr.lespoulpes.messaging.bridge;
 
 public class MessageConsumptionException extends Exception {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	private final boolean dropOnFailure;
-	
-	public static MessageConsumptionException dropOnFailure() {
-		return new MessageConsumptionException(true);
-	}
-	
-	public static MessageConsumptionException dropOnFailure(String message) {
-		return new MessageConsumptionException(true, message);
-	}
-	
-	public static MessageConsumptionException dropOnFailure(Throwable cause) {
-		return new MessageConsumptionException(true, cause);
-	}
-	
-	public static MessageConsumptionException moveToFailure() {
-		return new MessageConsumptionException(false);
-	}
-	
-	public static MessageConsumptionException moveToFailure(String message) {
-		return new MessageConsumptionException(false, message);
-	}
-	
-	public static MessageConsumptionException moveToFailure(Throwable cause) {
-		return new MessageConsumptionException(false, cause);
-	} 
-	
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	public MessageConsumptionException(boolean dropOnFailure) {
-		super();
-		this.dropOnFailure = dropOnFailure;
-	}
-	
-	public MessageConsumptionException(boolean dropOnFailure, String message) {
-		super(message);
-		this.dropOnFailure = dropOnFailure;
-	}
+    private final Policy policy;
 
-	public MessageConsumptionException(boolean dropOnFailure,Throwable cause) {
-		super(cause);
-		this.dropOnFailure = dropOnFailure;
-	}
+    private MessageConsumptionException(Policy policy, String message, Throwable cause) {
+        super(message, cause);
+        this.policy = policy;
+    }
+
+    public static MessageConsumptionExceptionBuilder builder() {
+        return new MessageConsumptionExceptionBuilder();
+    }
+
+    public enum Policy {
+        DROP, REPLAY, MOVE,
+    }
+
+    public static class MessageConsumptionExceptionBuilder {
+        private MessageConsumptionException.Policy policy;
+        private String message;
+        private Throwable cause;
+
+        public MessageConsumptionExceptionBuilder withPolicy(MessageConsumptionException.Policy policy) {
+            this.policy = policy;
+            return this;
+        }
+
+        public MessageConsumptionExceptionBuilder message(String message) {
+            this.message = message;
+            return this;
+        }
+
+        public MessageConsumptionExceptionBuilder cause(Throwable cause) {
+            this.cause = cause;
+            return this;
+        }
+
+        public MessageConsumptionException build() {
+            return new MessageConsumptionException(policy, message, cause);
+        }
+    }
 }

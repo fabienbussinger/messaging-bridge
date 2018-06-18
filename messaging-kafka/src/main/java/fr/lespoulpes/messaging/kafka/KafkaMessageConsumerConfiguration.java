@@ -1,31 +1,42 @@
 package fr.lespoulpes.messaging.kafka;
 
 import fr.lespoulpes.messaging.bridge.MessageConsumerConfiguration;
-import fr.lespoulpes.messaging.bridge.MessageSerDes;
+import org.apache.kafka.common.serialization.Serde;
 
 import java.util.Set;
 
-public class KafkaMessageConsumerConfiguration<K, V, T, U> implements MessageConsumerConfiguration<K, V, T, U> {
+public class KafkaMessageConsumerConfiguration<K, V> implements MessageConsumerConfiguration {
     private final String[] bootstrapServers;
     private final Set<String> topics;
-    private final MessageSerDes<K, V, T, U> messageSerDes;
+    private final String groupId;
+    private final Serde<K> keySerDe;
+    private final Serde<V> valueSerDe;
 
-    public KafkaMessageConsumerConfiguration(String[] bootstrapServers, Set<String> topics, MessageSerDes<K, V, T, U> messageSerDes) {
+    public KafkaMessageConsumerConfiguration(String[] bootstrapServers, Set<String> topics, Serde<K> keySerDe, Serde<V> valueSerDe, String groupId) {
         this.bootstrapServers = bootstrapServers;
         this.topics = topics;
-        this.messageSerDes = messageSerDes;
+        this.keySerDe = keySerDe;
+        this.valueSerDe = valueSerDe;
+        this.groupId = groupId;
     }
 
     public Set<String> getTopics() {
         return topics;
     }
 
-    @Override
-    public MessageSerDes<K, V, T, U> getMessageSerDes() {
-        return this.messageSerDes;
-    }
-
     public String[] getBootstrapServers() {
         return bootstrapServers;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public Serde<K> getKeySerDe() {
+        return keySerDe;
+    }
+
+    public Serde<V> getValueSerDe() {
+        return valueSerDe;
     }
 }
