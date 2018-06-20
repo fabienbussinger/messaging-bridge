@@ -3,7 +3,7 @@ package fr.lespoulpes.messaging.kafka;
 import fr.lespoulpes.messaging.bridge.Message;
 import fr.lespoulpes.messaging.bridge.MessageConsumer;
 import fr.lespoulpes.messaging.bridge.MessageConsumptionException;
-import fr.lespoulpes.messaging.bridge.MessageSubscriber;
+import fr.lespoulpes.messaging.bridge.subscriber.MessageSubscriber;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;

@@ -18,6 +18,10 @@ public class MessageConsumptionException extends Exception {
         return new MessageConsumptionExceptionBuilder();
     }
 
+    public Policy getPolicy() {
+        return policy;
+    }
+
     public enum Policy {
         DROP, REPLAY, MOVE,
     }
