@@ -1,11 +1,12 @@
 package fr.lespoulpes.messaging.bridge.subscriber;
 
 import fr.lespoulpes.messaging.bridge.Message;
-import fr.lespoulpes.messaging.bridge.MessageConsumptionException;
+import fr.lespoulpes.messaging.bridge.subscriber.consumer.MessageConsumptionException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -17,6 +18,7 @@ public class MessageSubscriberImpl<K, V, T extends Message<K, V>> implements Mes
     private final MessageSubscriberTemplate<K, V, T> messageSubscriberTemplate;
 
     public MessageSubscriberImpl(MessageSubscriberTemplate<K, V, T> messageSubscriberTemplate) {
+        Objects.requireNonNull(messageSubscriberTemplate, "A MessageSubscriberTemplate is mandatory");
         this.messageSubscriberTemplate = messageSubscriberTemplate;
     }
 

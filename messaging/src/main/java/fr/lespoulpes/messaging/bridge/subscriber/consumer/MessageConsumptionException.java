@@ -1,4 +1,4 @@
-package fr.lespoulpes.messaging.bridge;
+package fr.lespoulpes.messaging.bridge.subscriber.consumer;
 
 public class MessageConsumptionException extends Exception {
 

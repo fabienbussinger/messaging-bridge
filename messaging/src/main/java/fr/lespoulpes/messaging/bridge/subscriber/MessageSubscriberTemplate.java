@@ -1,39 +1,18 @@
 package fr.lespoulpes.messaging.bridge.subscriber;
 
 import fr.lespoulpes.messaging.bridge.Message;
-import fr.lespoulpes.messaging.bridge.MessageConsumptionException;
-
-import java.util.List;
+import fr.lespoulpes.messaging.bridge.subscriber.consumer.MessageConsumer;
+import fr.lespoulpes.messaging.bridge.subscriber.consumer.MessageConsumptionException;
 
 /**
  * Defines all the step of a message consumption<br>
- * Impleme
+ * This interface acts as a Mediator between dedicated classes that handles specific part of the message's consumption process
  *
  * @param <K>
  * @param <V>
  * @param <T>
  */
-public interface MessageSubscriberTemplate<K, V, T extends Message<K, V>> {
-
-    /**
-     * Returns a bunch of Message.
-     * This call is blocking and should never return null
-     *
-     * @return {@link List} of messages read
-     */
-    List<T> read();
-
-    /**
-     * Consume the message. The consumption must be properly done. <br>
-     * We mean that if the consumption is OK, then the message should not be available for another consumption.<br>
-     * Shortly, the message should be commited
-     * <p>
-     * If the consumption is KO. This method must raise a {@link MessageConsumptionException} which allows to specify a policy to behave differently
-     *
-     * @param message {@link Message} to be processed
-     * @throws MessageConsumptionException An exception that tells what to do with the message
-     */
-    void consume(T message) throws MessageConsumptionException;
+public interface MessageSubscriberTemplate<K, V, T extends Message<K, V>> extends MessageReader<K, V, T>, MessageConsumer<K, V, T> {
 
     /**
      * Tells to handle this {@link MessageConsumptionException} that should allow a proper behaviour
@@ -48,7 +27,7 @@ public interface MessageSubscriberTemplate<K, V, T extends Message<K, V>> {
      * Tells to handle an unexpected exception.
      * Most of the time, this means to drop the current message, to avoid other processing.
      *
-     * @param e       {@link Exception} The {@link fr.lespoulpes.messaging.bridge.MessageConsumer} might not have handled properly the processing.
+     * @param e       {@link Exception} The {@link MessageConsumer} might not have handled properly the processing.
      * @param message Current {@link Message} for which the processing has failed
      */
     void handleOnMessageProcessing(Exception e, T message);

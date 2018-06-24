@@ -6,5 +6,8 @@ package fr.lespoulpes.messaging.bridge.subscriber;
  * This simple interface hides all the complexity.
  */
 public interface MessageSubscriber {
+    /**
+     * Start the process of listening the incoming messages
+     */
     void subscribe();
 }
