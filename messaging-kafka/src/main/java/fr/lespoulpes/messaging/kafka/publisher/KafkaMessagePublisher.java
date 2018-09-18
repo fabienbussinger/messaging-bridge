@@ -3,6 +3,8 @@ package fr.lespoulpes.messaging.kafka.publisher;
 import fr.lespoulpes.messaging.bridge.Message;
 import fr.lespoulpes.messaging.bridge.publisher.MessagePublisher;
 import fr.lespoulpes.messaging.bridge.publisher.MessagePublisherException;
+import fr.lespoulpes.messaging.bridge.publisher.MessageWriterExceptionPolicy;
+import fr.lespoulpes.messaging.bridge.publisher.producer.MessageProducer;
 import fr.lespoulpes.messaging.kafka.KafkaMessage;
 import fr.lespoulpes.messaging.kafka.publisher.producer.KafkaMessageProducerConfigurationImpl;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -47,8 +49,9 @@ public class KafkaMessagePublisher<K, V> implements MessagePublisher<K, V, Kafka
     }
 
     @Override
-    public void publish(KafkaMessage<K, V> message) throws MessagePublisherException {
+    public void publish(MessageProducer<K, V, KafkaMessage<K, V>> producer) throws MessagePublisherException {
         AtomicReference<Exception> kafkaException = new AtomicReference<>();
+        KafkaMessage<K, V> message = producer.produce();
         if (this.canBeSent(message)) {
             this.kafkaProducer.send(new ProducerRecord<>(message.getTopicPartition().topic(), message.getKey(), message.getValue()),
                     (metadata, exception) -> {
@@ -65,7 +68,12 @@ public class KafkaMessagePublisher<K, V> implements MessagePublisher<K, V, Kafka
         }
         if (kafkaException.get() != null) {
             Exception current = kafkaException.get();
-            throw new MessagePublisherException(current instanceof RetriableException ? MessagePublisherException.Policy.Retriable : MessagePublisherException.Policy.NonRetriable, current);
+            throw new MessagePublisherException(current instanceof RetriableException ? MessageWriterExceptionPolicy.Retriable : MessageWriterExceptionPolicy.NonRetriable, current);
         }
+    }
+
+    @Override
+    public void publish(MessageProducer<K, V, KafkaMessage<K, V>> producer) throws MessagePublisherException {
+
     }
 }

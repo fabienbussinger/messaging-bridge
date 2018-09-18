@@ -1,8 +1,7 @@
 package fr.lespoulpes.messaging.kafka.subscriber;
 
-import fr.lespoulpes.messaging.bridge.subscriber.MessageSubscriberTemplate;
 import fr.lespoulpes.messaging.bridge.subscriber.consumer.MessageConsumer;
-import fr.lespoulpes.messaging.bridge.subscriber.consumer.MessageConsumptionException;
+import fr.lespoulpes.messaging.bridge.subscriber.consumer.exceptions.MessageConsumptionException;
 import fr.lespoulpes.messaging.kafka.KafkaMessage;
 import fr.lespoulpes.messaging.kafka.subscriber.consumer.KafkaMessageReader;
 import org.apache.kafka.clients.consumer.KafkaConsumer;

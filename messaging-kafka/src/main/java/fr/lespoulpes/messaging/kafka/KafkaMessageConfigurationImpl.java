@@ -2,7 +2,7 @@ package fr.lespoulpes.messaging.kafka;
 
 import org.apache.kafka.common.serialization.Serde;
 
-public class KafkaMessageConfigurationImpl<K, V> implements fr.lespoulpes.messaging.kafka.KafkaMessageConfiguration<K, V> {
+public class KafkaMessageConfigurationImpl<K, V> implements KafkaMessageConfiguration<K, V> {
     private final String[] bootstrapServers;
     private final Serde<K> keySerDe;
     private final Serde<V> valueSerDe;

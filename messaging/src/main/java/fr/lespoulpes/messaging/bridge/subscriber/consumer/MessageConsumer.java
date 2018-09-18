@@ -1,6 +1,8 @@
 package fr.lespoulpes.messaging.bridge.subscriber.consumer;
 
 import fr.lespoulpes.messaging.bridge.Message;
+import fr.lespoulpes.messaging.bridge.shared.Closeable;
+import fr.lespoulpes.messaging.bridge.subscriber.consumer.exceptions.MessageConsumptionException;
 
 /**
  * Defines what should be done to consume a message.
@@ -8,7 +10,7 @@ import fr.lespoulpes.messaging.bridge.Message;
  * @param <K> Type of the message's key
  * @param <V> Type of the message's value
  */
-public interface MessageConsumer<K, V, T extends Message<K, V>> {
+public interface MessageConsumer<K, V, T extends Message<K, V>> extends Closeable {
     /**
      * Consume the message. The consumption must be properly done. <br>
      * We mean that if the consumption is OK, then the message should not be available for another consumption.<br>

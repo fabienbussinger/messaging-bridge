@@ -1,4 +1,4 @@
-package fr.lespoulpes.messaging.bridge.subscriber.consumer;
+package fr.lespoulpes.messaging.bridge.subscriber.consumer.exceptions;
 
 public class MessageConsumptionException extends Exception {
 
@@ -22,16 +22,12 @@ public class MessageConsumptionException extends Exception {
         return policy;
     }
 
-    public enum Policy {
-        DROP, REPLAY, MOVE,
-    }
-
     public static class MessageConsumptionExceptionBuilder {
-        private MessageConsumptionException.Policy policy;
+        private Policy policy;
         private String message;
         private Throwable cause;
 
-        public MessageConsumptionExceptionBuilder withPolicy(MessageConsumptionException.Policy policy) {
+        public MessageConsumptionExceptionBuilder withPolicy(Policy policy) {
             this.policy = policy;
             return this;
         }
