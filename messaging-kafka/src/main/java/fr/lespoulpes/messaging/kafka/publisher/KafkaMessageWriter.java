@@ -34,20 +34,27 @@ public class KafkaMessageWriter<K, V> implements MessageWriter<K, V, KafkaMessag
         this.kafkaProducer = new KafkaProducer<>(props);
     }
 
+    private ProducerRecord<K, V> create(String topic, KafkaMessage<K, V> message) {
+        if (message.getKey().isPresent()) {
+            return new ProducerRecord<>(topic, message.getKey().get(), message.getValue());
+        } else {
+            return new ProducerRecord<>(topic, message.getValue());
+        }
+    }
+
     @Override
     public void write(KafkaMessage<K, V> message) throws MessageWriterException {
         for (String topic : this.producerConfiguration.getTopics()) {
             try {
-                this.kafkaProducer.send(new ProducerRecord<>(topic, message.getKey(), message.getValue()),
-                        (metadata, exception) -> {
-                            if (exception == null) {
-                                LOG.info("Message sent to topic {} - partition {} - offset {}", metadata.topic(),
-                                        metadata.partition(), metadata.offset());
-                            } else {
-                                LOG.error("Message sending failed to topic {} - partition {} - offset {}",
-                                        metadata.topic(), metadata.partition(), metadata.offset(), exception);
-                            }
-                        });
+                this.kafkaProducer.send(create(topic, message), (metadata, exception) -> {
+                    if (exception == null) {
+                        LOG.info("Message sent to topic {} - partition {} - offset {}", metadata.topic(),
+                                metadata.partition(), metadata.offset());
+                    } else {
+                        LOG.error("Message sending failed to topic {} - partition {} - offset {}",
+                                metadata.topic(), metadata.partition(), metadata.offset(), exception);
+                    }
+                });
                 this.kafkaProducer.flush();
             } catch (KafkaException e) {
                 throw new MessageWriterException(e instanceof RetriableException ? MessageWriterExceptionPolicy.Retriable : MessageWriterExceptionPolicy.NonRetriable, e);

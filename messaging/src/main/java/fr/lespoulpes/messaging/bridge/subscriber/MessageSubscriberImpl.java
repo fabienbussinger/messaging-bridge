@@ -17,21 +17,22 @@ public class MessageSubscriberImpl<K, V, T extends Message<K, V>> implements Mes
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    private final MessageSubscriberBuilder<K, V, T> messageSubscriberBuilder;
+    private final MessageSubscriberDependenciesHolder<K, V, T> messageSubscriberDependenciesHolder;
 
     private boolean doLoop = true;
 
-    public MessageSubscriberImpl(MessageSubscriberBuilder<K, V, T> messageSubscriberBuilder) {
-        Objects.requireNonNull(messageSubscriberBuilder, "A MessageSubscriberBuilder is mandatory");
-        this.messageSubscriberBuilder = messageSubscriberBuilder;
+    public MessageSubscriberImpl(MessageSubscriberDependenciesHolder<K, V, T> messageSubscriberDependenciesHolder) {
+        Objects.requireNonNull(messageSubscriberDependenciesHolder, "A MessageSubscriberDependenciesHolder is mandatory");
+        this.messageSubscriberDependenciesHolder = messageSubscriberDependenciesHolder;
     }
 
     @Override
     public void subscribe() {
         this.executor.execute(() -> {
-            MessageReader<K, V, T> messageReader = this.messageSubscriberBuilder.reader();
-            MessageConsumptionExceptionHandler<K, V, T> exceptionHandler = this.messageSubscriberBuilder.exceptionHandler();
-            MessageConsumer<K, V, T> consumer = this.messageSubscriberBuilder.consumer();
+            MessageReader<K, V, T> messageReader = this.messageSubscriberDependenciesHolder.reader();
+            MessageConsumptionExceptionHandler<K, V, T> consumptionExceptionHandler = this.messageSubscriberDependenciesHolder.consumptionExceptionHandler();
+            MessageReadingExceptionHandler<K, V, T> readingExceptionHandler = this.messageSubscriberDependenciesHolder.readingExceptionHandler();
+            MessageConsumer<K, V> consumer = this.messageSubscriberDependenciesHolder.consumer();
 
             try {
                 while (doLoop) {
@@ -43,21 +44,25 @@ public class MessageSubscriberImpl<K, V, T extends Message<K, V>> implements Mes
                                 consumer.consume(message);
                             } catch (MessageConsumptionException e) {
                                 LOG.error("Processor as raised an exception with behaviour {}", e.getPolicy());
-                                exceptionHandler.handleMessageConsumptionException(e, message);
+                                consumptionExceptionHandler.handleMessageConsumptionException(e, message);
                             } catch (RuntimeException e) {
                                 LOG.error("Unexpected exception while processing a message");
-                                exceptionHandler.handleMessageConsumptionException(e, message);
+                                consumptionExceptionHandler.handleMessageConsumptionException(e, message);
                             }
                         }
                     } catch (MessageReaderException e) {
-                        doLoop = false;
-                        exceptionHandler.handleMessageReadingException(e);
+                        readingExceptionHandler.handleMessageReadingException(messageReader, e);
                     }
                 }
             } finally {
-                consumer.close();
                 messageReader.close();
             }
         });
+    }
+
+    @Override
+    public void shutdown() {
+        this.doLoop = false;
+        this.messageSubscriberDependenciesHolder.reader().shutdown();
     }
 }

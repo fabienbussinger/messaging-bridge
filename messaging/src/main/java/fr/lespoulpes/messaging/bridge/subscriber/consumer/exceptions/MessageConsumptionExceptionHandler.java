@@ -1,7 +1,6 @@
 package fr.lespoulpes.messaging.bridge.subscriber.consumer.exceptions;
 
 import fr.lespoulpes.messaging.bridge.Message;
-import fr.lespoulpes.messaging.bridge.subscriber.MessageReaderException;
 import fr.lespoulpes.messaging.bridge.subscriber.consumer.MessageConsumer;
 
 public interface MessageConsumptionExceptionHandler<K, V, T extends Message<K, V>> {
@@ -22,11 +21,4 @@ public interface MessageConsumptionExceptionHandler<K, V, T extends Message<K, V
      * @param message Current {@link Message} for which the processing has failed
      */
     void handleMessageConsumptionException(RuntimeException e, T message);
-
-    /**
-     * This method only occurs when reading the messages
-     *
-     * @param e {@link MessageReaderException} that happened while reading the messages
-     */
-    void handleMessageReadingException(MessageReaderException e);
 }

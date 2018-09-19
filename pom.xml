@@ -8,6 +8,7 @@
     <modules>
         <module>messaging</module>
         <module>messaging-kafka</module>
+        <module>messaging-api</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

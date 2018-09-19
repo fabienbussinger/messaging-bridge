@@ -1,11 +1,13 @@
 package fr.lespoulpes.messaging.bridge;
 
+import java.util.Optional;
+
 public class MessageImpl<K, V> implements Message<K, V> {
-    private final K key;
+    private final Optional<K> key;
     private final V value;
 
     public MessageImpl(K key, V value) {
-        this.key = key;
+        this.key = Optional.ofNullable(key);
         this.value = value;
     }
 
@@ -15,7 +17,7 @@ public class MessageImpl<K, V> implements Message<K, V> {
     }
 
     @Override
-    public K getKey() {
+    public Optional<K> getKey() {
         return this.key;
     }
 

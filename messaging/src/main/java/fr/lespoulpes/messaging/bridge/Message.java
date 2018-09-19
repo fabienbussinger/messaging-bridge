@@ -1,5 +1,7 @@
 package fr.lespoulpes.messaging.bridge;
 
+import java.util.Optional;
+
 /**
  * A message is materialized by a key, used for partitioning and a value.
  * 
@@ -9,14 +11,14 @@ package fr.lespoulpes.messaging.bridge;
  * @param <V>
  */
 public interface Message<K, V> {
-	K getKey();
+	Optional<K> getKey();
 	V getValue();
 	
 	static <K,V> Message<K,V> create(K key, V value) {
 		return new Message<K,V>() {
 			@Override
-			public K getKey() {
-				return key;
+			public Optional<K> getKey() {
+				return Optional.ofNullable(key);
 			}
 
 			@Override
@@ -29,8 +31,8 @@ public interface Message<K, V> {
 	static <K,V> Message<K,V> create(V value) {
 		return new Message<K,V>() {
 			@Override
-			public K getKey() {
-				return null;
+			public Optional<K> getKey() {
+				return Optional.empty();
 			}
 
 			@Override

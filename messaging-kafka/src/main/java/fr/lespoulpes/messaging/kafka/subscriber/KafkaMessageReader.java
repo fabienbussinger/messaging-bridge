@@ -1,4 +1,4 @@
-package fr.lespoulpes.messaging.kafka.subscriber.consumer;
+package fr.lespoulpes.messaging.kafka.subscriber;
 
 import fr.lespoulpes.messaging.bridge.subscriber.MessageReader;
 import fr.lespoulpes.messaging.kafka.KafkaMessage;
@@ -21,5 +21,15 @@ public class KafkaMessageReader<K, V> implements MessageReader<K, V, KafkaMessag
     public List<KafkaMessage<K, V>> read() {
         return StreamSupport.stream(kafkaConsumer.poll(Long.MAX_VALUE).spliterator(), false)
                 .map(cr -> new KafkaMessage<>(new TopicPartition(cr.topic(), cr.partition()), cr.key(), cr.value())).collect(Collectors.toList());
+    }
+
+    @Override
+    public void close() {
+        kafkaConsumer.close();
+    }
+
+    @Override
+    public void shutdown() {
+        this.kafkaConsumer.wakeup();
     }
 }
